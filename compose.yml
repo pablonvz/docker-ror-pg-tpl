@@ -1,0 +1,32 @@
+version: "3.1"
+
+networks:
+  defnet:
+
+services:
+  pg:
+    image: postgres:15.2
+    restart: always
+    networks:
+      - defnet
+    environment:
+      - POSTGRES_DB=${POSTGRES_DB}
+      - POSTGRES_USER=${POSTGRES_USER}
+      - POSTGRES_PASSWORD=${POSTGRES_PASSWORD}
+
+  api:
+    image: ruby:3.2
+    tty: true
+    networks:
+      - defnet
+    ports:
+      - 3000:3000
+    volumes:
+      - ./backend:/usr/app
+      - ./usr-local-bundle:/usr/local/bundle
+    environment:
+      - POSTGRES_DB=${POSTGRES_DB}
+      - POSTGRES_USER=${POSTGRES_USER}
+      - POSTGRES_PASSWORD=${POSTGRES_PASSWORD}
+      - PORT=${PORT}
+    working_dir: /usr/app
